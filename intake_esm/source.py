@@ -51,7 +51,14 @@ def _open_dataset(
     storage_options = xarray_open_kwargs.get('backend_kwargs', {}).get('storage_options', {})
     # Support kerchunk datasets, setting the file object (fo) and urlpath
     if data_format == 'reference':
-        xarray_open_kwargs['backend_kwargs']['storage_options']['fo'] = urlpath
+        if 's3://' in urlpath:
+            import s3fs
+            xarray_open_kwargs['backend_kwargs']['storage_options']['fo'] = s3fs.S3FileSystem(
+                **xarray_open_kwargs['backend_kwargs']['storage_options']['remote_options']).open(
+                    urlpath, compression=None
+                )
+        else:
+            xarray_open_kwargs['backend_kwargs']['storage_options']['fo'] = urlpath
         xarray_open_kwargs['backend_kwargs']['consolidated'] = False
         urlpath = 'reference://'
 
