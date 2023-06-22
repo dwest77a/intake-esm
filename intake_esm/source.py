@@ -10,7 +10,6 @@ from intake.source.base import DataSource, Schema
 from .cat import Aggregation, DataFormat
 from .utils import OPTIONS
 
-
 class ESMDataSourceError(Exception):
     pass
 
